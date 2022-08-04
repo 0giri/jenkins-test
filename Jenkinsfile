@@ -4,11 +4,6 @@ pipeline {
   stages {
     stage('Build Frontend') {
       agent { docker 'node:16.14.2-alpine' }
-      input {
-                parameters {
-                    string(name: 'PERSON', defaultValue: 'Mr Jenkins', description: 'Who should I say hello to?')
-                }
-            }
       steps {
         sh 'ls'
         cd 'jenkins-test-frontend'
