@@ -6,7 +6,7 @@ pipeline {
       agent { docker 'node:16.14.2-alpine' }
       steps {
         sh 'cd jenkins-test-frontend; npm install; npm run build;'
-        sh 'cd jenkins-test-frontend; docker build -t localhost/test:v0.1.0.20220804v1'
+        docker.build 'localhost/test:v0.1.0.20220804v1'
       }
     }
     stage('Build Backend1') {
