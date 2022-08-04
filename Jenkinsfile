@@ -7,6 +7,7 @@ pipeline {
       steps {
         sh 'ls'
         sh 'cd jenkins-test-frontend'
+        sh 'ls'
         sh 'npm install'
         sh 'npm run build'
         sh 'docker build -t localhost/test:v0.1.0.20220804v1'
