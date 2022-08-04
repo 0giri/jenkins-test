@@ -5,6 +5,9 @@ pipeline {
     stage('Build Frontend') {
       agent { docker 'node:16.14.2-alpine' }
       steps {
+        sh 'cd jenkins-test-frontend'
+        sh 'npm install'
+        sh 'npm run build'
         sh 'node -v'
       }
     }
