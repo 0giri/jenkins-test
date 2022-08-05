@@ -5,7 +5,7 @@ pipeline {
     stage('Build Frontend') {
       agent {
          docker 'node:16.14.2-alpine' 
-         reuseNode true
+         
          }
       steps {
            sh 'cd jenkins-test-frontend; npm install; npm run build;'
