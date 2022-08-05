@@ -7,7 +7,7 @@ pipeline {
       steps {
         script {
           dir("jenkins-test-frontend") {
-            sh 'cd jenkins-test-frontend; npm install; npm run build;'
+            sh 'npm install; npm run build;'
             app = docker.build("jenkins-test-frontend")
           }
         }
