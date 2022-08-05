@@ -1,9 +1,10 @@
 pipeline {
-  agent any
+  agent none
 
   stages {
 
     stage('Build Frontend') {
+      agent { docker 'node:16.14.2' }
       steps {
         script {
           dir("jenkins-test-frontend") {
