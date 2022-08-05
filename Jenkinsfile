@@ -1,20 +1,20 @@
 pipeline {
-  agent none
+  agent any
 
   stages {
     stage('Build Frontend') {
-      agent { docker 'node:16.14.2-alpine' }
+      agent {
+         docker 'node:16.14.2-alpine' 
+         reuseNode true
+         }
       steps {
-        sh 'cd jenkins-test-frontend; npm install; npm run build;'
-        script {
-          docker.build 'localhost/test:v0.1.0.20220804v1'
-        }
+           sh 'cd jenkins-test-frontend; npm install; npm run build;'
       }
     }
     stage('Build Backend1') {
-      agent { docker 'gradle:7.5-jdk11' }
+      agent any
       steps {
-        sh 'gradle -v'
+        sh 'docker ps'
       }
     }
     stage('Build Backend2') {
