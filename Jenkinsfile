@@ -6,7 +6,9 @@ pipeline {
     stage('Build Frontend') {
       steps {
         script {
-          app = docker.build("teample-frontend-web")
+          dir("jenkins-test-frontend") {
+            app = docker.build("jenkins-test-frontend")
+          }
         }
           //  sh 'cd jenkins-test-frontend; npm install; npm run build;'
       }
@@ -26,6 +28,6 @@ pipeline {
         sh 'gradle -v'
       }
     }
-    
+
   }
 }
