@@ -28,7 +28,7 @@ pipeline {
           steps {
             dir("jenkins-pipeline/back2") {
               sh './gradlew clean build'
-              sh 'docker build -t jenkins-pipeline-back1 .'
+              sh 'docker build -t jenkins-pipeline-back2 .'
             }
           }
         }
