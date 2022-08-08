@@ -21,7 +21,7 @@ pipeline {
         stage('Build Backend1') {
           steps {
             dir("jenkins-pipeline/back1") {
-                sh 'ls'
+                sh 'ls' 
                 // sh 'npm install; npm run build;'
                 // app = docker.build("jenkins-test-frontend")
             }
