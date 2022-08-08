@@ -32,7 +32,7 @@ pipeline {
           steps {
             dir("jenkins-pipeline/back2") {
               sh 'ls'
-              sh 'gradle -v'
+              sh './gradlew gradle -v'
             }
           }
         }
@@ -42,5 +42,5 @@ pipeline {
     }
 
   }
-  
+
 }
