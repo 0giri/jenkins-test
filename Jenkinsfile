@@ -25,8 +25,8 @@ pipeline {
     }
 
     stage('Build Backend2') {
-      dir("jenkins-pipeline/back2") {
-        steps {
+      steps {
+        dir("jenkins-pipeline/back2") {
           sh 'ls'
           sh 'gradle -v'
         }
