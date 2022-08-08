@@ -21,6 +21,7 @@ pipeline {
             cd 'ls'
             // sh 'npm install; npm run build;'
             // app = docker.build("jenkins-test-frontend")
+        }
       }
     }
 
@@ -33,5 +34,4 @@ pipeline {
       }
     }
 
-  }
 }
