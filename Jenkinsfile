@@ -20,8 +20,8 @@ pipeline {
         stage('Build Backend1') {
           steps {
             dir("jenkins-pipeline/back1") {
-                sh 'ls build/libs'
                 sh './gradlew clean build'
+                sh 'ls build/libs'
                 sh 'docker build -t jenkins-pipeline-back1 .'
             }
           }
@@ -30,8 +30,8 @@ pipeline {
         stage('Build Backend2') {
           steps {
             dir("jenkins-pipeline/back2") {
-              sh 'ls build/libs'
               sh './gradlew clean build'
+              sh 'ls build/libs'
               sh 'docker build -t jenkins-pipeline-back2 .'
             }
           }
