@@ -8,10 +8,12 @@ pipeline {
 
         stage('Build Frontend') {
           steps {
-            dir("jenkins-test-frontend") {
-              sh 'ls'
-              sh 'npm install; npm run build;'
-              app = docker.build("jenkins-test-frontend")
+            script {
+              dir("jenkins-test-frontend") {
+                sh 'ls'
+                sh 'npm install; npm run build;'
+                app = docker.build("jenkins-test-frontend")
+              }
             }
           }
         }
