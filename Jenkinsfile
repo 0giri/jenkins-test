@@ -19,6 +19,7 @@ pipeline {
       steps {
         sh 'pwd'
         sh 'ls'
+        sh 'cd jenkins-test-frontend; ls;'
         sh 'docker ps'
       }
     }
