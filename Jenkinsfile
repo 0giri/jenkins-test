@@ -8,12 +8,9 @@ pipeline {
 
         stage('Build Frontend') {
           steps {
-            script {
-              dir("jenkins-test-frontend") {
-                sh 'ls'
-                sh 'npm install; npm run build;'
-                app = docker.build("jenkins-test-frontend")
-              }
+            dir("jenkins-test-frontend") {
+              sh 'npm install; npm run build;'
+              sh 'docker build -t jenkins-test-frontend .'
             }
           }
         }
@@ -22,7 +19,7 @@ pipeline {
           steps {
             dir("jenkins-pipeline/back1") {
                 sh './gradlew clean build'
-                app = docker.build("jenkins-pipeline-back1")
+                sh 'docker build -t jenkins-pipeline-back1 .'
             }
           }
         }
@@ -31,7 +28,7 @@ pipeline {
           steps {
             dir("jenkins-pipeline/back2") {
               sh './gradlew clean build'
-              app = docker.build("jenkins-pipeline-back2")
+              sh 'docker build -t jenkins-pipeline-back1 .'
             }
           }
         }
