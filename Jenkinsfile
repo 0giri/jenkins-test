@@ -20,6 +20,7 @@ pipeline {
         stage('Build Backend1') {
           steps {
             dir("jenkins-pipeline/back1") {
+                sh 'ls build/libs'
                 sh './gradlew clean build'
                 sh 'docker build -t jenkins-pipeline-back1 .'
             }
