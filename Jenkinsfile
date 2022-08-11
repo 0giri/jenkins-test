@@ -50,18 +50,18 @@ pipeline {
     stage('Build Image') {
 
       parallel {
-        stage('Build Backend1 Image') { 
-          agent any
-          steps {
-            unstash 'backend1-build'
-            sh 'ls'
-          }
-        }
-
         stage('Build Frontend Image') {
           agent any
           steps {
             unstash 'frontend-build'
+            sh 'ls'
+          }
+        }
+
+        stage('Build Backend1 Image') { 
+          agent any
+          steps {
+            unstash 'backend1-build'
             sh 'ls'
           }
         }
