@@ -13,20 +13,32 @@ pipeline {
       )
   }
 
-  
-  stages('All') {
+  stages {
 
     stage('Build Source Code') {
 
       parallel {
 
         stage('Build Frontend') {
+          environment {
+            CI=false
+            APP=test-frontend
+            GRADLE_VER_NAME=gradle7.5
+            IMAGE_REGISTRY=localhost
+            JENKINS_TAR_DIR=/root/teample
+            SERVER_IP=192.168.16.37
+            SERVER_USER=giri
+            SERVER_PWD=openbase
+            SERVER_TAR_DIR=/home/giri/teample
+            SERVER_K8S_DIR=/opt/obapps/teample
+            IMAGE=${IMAGE_REGISTRY}/${APP}:v${RELEASE_VER}.${BUILD_TIMESTAMP}
+          }
           steps {
             dir("jenkins-test-frontend") {
               sh 'npm install; npm run build;'
-              script {
-                app1 = docker.build("test-frontend:$BUILD_NUMBER")
-              }
+              sh 'docker build -t ${IMAGE}'
+              sh 'docker save -o ${JENKINS_TAR_DIR}/${APP}.tar ${IMAGE}'
+              sh 'scp ${JENKINS_TAR_DIR}/${APP}.tar ${SERVER_USER}@${SERVER_IP}:${SERVER_TAR_DIR}'
             }
           }
         }
