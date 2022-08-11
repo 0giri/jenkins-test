@@ -29,7 +29,7 @@ pipeline {
             dir("jenkins-pipeline/back1") {
                 sh './gradlew clean build'
                 sh 'ls build/libs'
-                stash includes: 'build/libs/', name: 'backend1-build'
+                stash includes: 'build/libs/*.jar', name: 'backend1-build'
             }
           }
         }
@@ -40,7 +40,7 @@ pipeline {
             dir("jenkins-pipeline/back2") {
               sh './gradlew clean build'
               sh 'ls build/libs'
-              stash includes: 'build/libs/', name: 'backend2-build'
+              stash includes: 'build/libs/*.jar', name: 'backend2-build'
             }
           }
         }
