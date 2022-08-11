@@ -24,7 +24,7 @@ pipeline {
           steps {
             dir("jenkins-test-frontend") {
               sh 'npm install; npm run build;'
-              app = docker.build("test-frontend:$BUILD_NUMBER")
+              app1 = docker.build("test-frontend:$BUILD_NUMBER")
             }
           }
         }
@@ -33,7 +33,7 @@ pipeline {
           steps {
             dir("jenkins-pipeline/back1") {
               sh 'gradle clean build'
-              app = docker.build("test-backend1:$BUILD_NUMBER")
+              app2 = docker.build("test-backend1:$BUILD_NUMBER")
             }
           }
         }
@@ -42,7 +42,7 @@ pipeline {
           steps {
             dir("jenkins-pipeline/back2") {
               sh 'gradle clean build'
-              app = docker.build("test-backend2:$BUILD_NUMBER")
+              app3 = docker.build("test-backend2:$BUILD_NUMBER")
             }
           }
         }
