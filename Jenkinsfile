@@ -29,7 +29,7 @@ pipeline {
             dir("jenkins-pipeline/back1") {
                 sh './gradlew clean build'
                 sh 'ls build/libs'
-                stash includes: 'build/libs', name: 'backend1-build'
+                stash includes: 'build/libs/', name: 'backend1-build'
             }
           }
         }
@@ -40,16 +40,18 @@ pipeline {
             dir("jenkins-pipeline/back2") {
               sh './gradlew clean build'
               sh 'ls build/libs'
-              stash includes: 'build/libs', name: 'backend2-build'
+              stash includes: 'build/libs/', name: 'backend2-build'
             }
           }
         }
       }
     }
+
     stage('Build Image') {
+
       parallel {
-        stage('Build Backend1 Image') {
-          agent any 
+        stage('Build Backend1 Image') { 
+          agent any
           steps {
             unstash 'backend1-build'
             sh 'ls'
@@ -57,7 +59,7 @@ pipeline {
         }
 
         stage('Build Frontend Image') {
-          agent any 
+          agent any
           steps {
             unstash 'frontend-build'
             sh 'ls'
@@ -65,7 +67,7 @@ pipeline {
         }
 
         stage('Build Backend2 Image') {
-          agent any 
+          agent any
           steps {
             unstash 'backend2-build'
             sh 'ls'
