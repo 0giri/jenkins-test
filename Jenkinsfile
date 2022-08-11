@@ -34,12 +34,10 @@ pipeline {
           }
           steps {
             dir("jenkins-test-frontend") {
-              sh '''
-                npm install; npm run build;
-                docker build -t ${IMAGE_REGISTRY}/${APP}:v${RELEASE_VER}.${BUILD_TIMESTAMP}
-                docker save -o ${JENKINS_TAR_DIR}/${APP}.tar ${IMAGE_REGISTRY}/${APP}:v${RELEASE_VER}.${BUILD_TIMESTAMP}
-                scp ${JENKINS_TAR_DIR}/${APP}.tar ${SERVER_USER}@${SERVER_IP}:${SERVER_TAR_DIR}
-              '''
+              sh 'npm install; npm run build'
+              sh 'docker build -t ${IMAGE_REGISTRY}/${APP}:v${RELEASE_VER}.${BUILD_TIMESTAMP} .'
+              sh 'docker save -o ${JENKINS_TAR_DIR}/${APP}.tar ${IMAGE_REGISTRY}/${APP}:v${RELEASE_VER}.${BUILD_TIMESTAMP}'
+              sh 'scp ${JENKINS_TAR_DIR}/${APP}.tar ${SERVER_USER}@${SERVER_IP}:${SERVER_TAR_DIR}'
             }
           }
         }
