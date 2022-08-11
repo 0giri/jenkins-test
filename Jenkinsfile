@@ -1,9 +1,9 @@
 pipeline {
   agent any
-  tools { [
+  tools { 
     nodejs 'node-16.14.2',
     gradle 'gradle-7.5.1' 
-  ] }
+  }
 
   parameters {
       string(
