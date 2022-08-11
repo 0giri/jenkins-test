@@ -1,10 +1,7 @@
 pipeline {
   agent any
   tools { 
-    nodejs 'node-16.14.2'
-  }
-  tools {
-    gradle 'gradle-7.5.1' 
+    nodejs {'node-16.14.2'}, gradle {'gradle-7.5.1'} 
   }
 
   parameters {
