@@ -31,14 +31,15 @@ pipeline {
             SERVER_PWD='openbase'
             SERVER_TAR_DIR='/home/giri/teample'
             SERVER_K8S_DIR='/opt/obapps/teample'
-            IMAGE=${IMAGE_REGISTRY}/${APP}:v${RELEASE_VER}.${BUILD_TIMESTAMP}
           }
           steps {
             dir("jenkins-test-frontend") {
-              sh 'npm install; npm run build;'
-              sh 'docker build -t ${IMAGE}'
-              sh 'docker save -o ${JENKINS_TAR_DIR}/${APP}.tar ${IMAGE}'
-              sh 'scp ${JENKINS_TAR_DIR}/${APP}.tar ${SERVER_USER}@${SERVER_IP}:${SERVER_TAR_DIR}'
+              sh '''
+                npm install; npm run build;
+                docker build -t ${IMAGE}
+                docker save -o ${JENKINS_TAR_DIR}/${APP}.tar ${IMAGE_REGISTRY}/${APP}:v${RELEASE_VER}.${BUILD_TIMESTAMP}
+                scp ${JENKINS_TAR_DIR}/${APP}.tar ${SERVER_USER}@${SERVER_IP}:${SERVER_TAR_DIR}
+              '''
             }
           }
         }
