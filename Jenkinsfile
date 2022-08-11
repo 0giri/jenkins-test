@@ -1,6 +1,6 @@
 pipeline {
   agent any
-  tools { nodejs "node-16.14.2" , gradle 'gradle-7.5.1'}
+  tools { nodejs "node-16.14.2",gradle "gradle-7.5.1" }
 
   parameters {
       string(
@@ -27,7 +27,6 @@ pipeline {
         }
 
         stage('Build Backend1') {
-          agent { docker 'adoptopenjdk/openjdk11' }
           steps {
             dir("jenkins-pipeline/back1") {
               sh 'gradle clean build'
@@ -37,11 +36,9 @@ pipeline {
         }
 
         stage('Build Backend2') {
-          agent { docker 'adoptopenjdk/openjdk11' }
           steps {
             dir("jenkins-pipeline/back2") {
               sh 'gradle clean build'
-              sh 'ls build/libs'
               app = docker.build("test-backend2:$BUILD_NUMBER")
             }
           }
