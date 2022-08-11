@@ -20,7 +20,7 @@ pipeline {
         }
 
         stage('Build Backend1') {
-          agent { docker 'openjdk:11-jre' }
+          agent { docker 'adoptopenjdk/openjdk11' }
           steps {
             dir("jenkins-pipeline/back1") {
                 sh './gradlew clean build'
@@ -31,7 +31,7 @@ pipeline {
         }
 
         stage('Build Backend2') {
-          agent { docker 'openjdk:11-jre' }
+          agent { docker 'adoptopenjdk/openjdk11' }
           steps {
             dir("jenkins-pipeline/back2") {
               sh './gradlew clean build'
