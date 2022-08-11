@@ -31,7 +31,7 @@ pipeline {
             SERVER_PWD='openbase'
             SERVER_TAR_DIR='/home/giri/teample'
             SERVER_K8S_DIR='/opt/obapps/teample'
-            IMAGE='${IMAGE_REGISTRY}/${APP}:v${RELEASE_VER}.${BUILD_TIMESTAMP}''
+            IMAGE='${IMAGE_REGISTRY}/${APP}:v${RELEASE_VER}.${BUILD_TIMESTAMP}'
           }
           steps {
             dir("jenkins-test-frontend") {
