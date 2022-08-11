@@ -11,7 +11,7 @@ pipeline {
 
   
   stages('All') {
-    parallel {
+    // parallel {
       stage('Build Frontend') {
         agent { docker 'node:16.14.2' }
         steps {
@@ -64,7 +64,7 @@ pipeline {
           sh 'ls'
         }
       }
-    }
+    // }
   }
 
 }
