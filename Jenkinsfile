@@ -30,7 +30,7 @@ pipeline {
           agent { docker 'adoptopenjdk/openjdk11' }
           steps {
             dir("jenkins-pipeline/back1") {
-              sh './gradlew clean build'
+              sh 'gradle clean build'
               app = docker.build("test-backend1:$BUILD_NUMBER")
             }
           }
@@ -40,7 +40,7 @@ pipeline {
           agent { docker 'adoptopenjdk/openjdk11' }
           steps {
             dir("jenkins-pipeline/back2") {
-              sh './gradlew clean build'
+              sh 'gradle clean build'
               sh 'ls build/libs'
               app = docker.build("test-backend2:$BUILD_NUMBER")
             }
