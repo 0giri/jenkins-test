@@ -1,5 +1,6 @@
 pipeline {
-  agent none
+  agent any
+  tools { nodejs "node-16.14.2" }
 
   parameters {
       string(
@@ -11,14 +12,16 @@ pipeline {
 
   
   stages('All') {
+
     stage('Build Source Code') {
+
       parallel {
+
         stage('Build Frontend') {
-          agent { docker 'node:16.14.2' }
           steps {
             dir("jenkins-test-frontend") {
               sh 'npm install; npm run build;'
-              stash includes: 'build/', name: 'frontend-build'
+              app = docker.build("test-frontend:$BUILD_NUMBER")
             }
           }
         }
@@ -28,8 +31,7 @@ pipeline {
           steps {
             dir("jenkins-pipeline/back1") {
               sh './gradlew clean build'
-              sh 'ls build/libs'
-              stash includes: 'build/libs/*.jar', name: 'backend1-build'
+              app = docker.build("test-backend1:$BUILD_NUMBER")
             }
           }
         }
@@ -40,47 +42,15 @@ pipeline {
             dir("jenkins-pipeline/back2") {
               sh './gradlew clean build'
               sh 'ls build/libs'
-              stash includes: 'build/libs/*.jar', name: 'backend2-build'
+              app = docker.build("test-backend2:$BUILD_NUMBER")
             }
           }
         }
+
       }
+      
     }
 
-    stage('Build Image') {
-
-      parallel {
-        stage('Build Frontend Image') {
-          agent any
-          steps {
-            dir("jenkins-test-frontend") {
-              unstash 'frontend-build'
-              sh 'ls build'
-            }
-          }
-        }
-
-        stage('Build Backend1 Image') { 
-          agent any
-          steps {
-            dir("jenkins-pipeline/back1/build/libs") {
-              unstash 'backend1-build'
-              sh 'ls build'
-            }
-          }
-        }
-
-        stage('Build Backend2 Image') {
-          agent any
-          steps {
-            dir("jenkins-pipeline/back2") {            
-              unstash 'backend2-build'
-              sh 'ls'
-            }
-          }
-        }
-      }
-    }
   }
 
 }
