@@ -27,9 +27,9 @@ pipeline {
           agent { docker 'adoptopenjdk/openjdk11' }
           steps {
             dir("jenkins-pipeline/back1") {
-                sh './gradlew clean build'
-                sh 'ls build/libs'
-                stash includes: 'build/libs/*.jar', name: 'backend1-build'
+              sh './gradlew clean build'
+              sh 'ls build/libs'
+              stash includes: 'build/libs/*.jar', name: 'backend1-build'
             }
           }
         }
@@ -53,24 +53,30 @@ pipeline {
         stage('Build Frontend Image') {
           agent any
           steps {
-            unstash 'frontend-build'
-            sh 'ls'
+            dir("jenkins-test-frontend") {
+              unstash 'frontend-build'
+              sh 'ls build'
+            }
           }
         }
 
         stage('Build Backend1 Image') { 
           agent any
           steps {
-            unstash 'backend1-build'
-            sh 'ls'
+            dir("jenkins-pipeline/back1/build/libs") {
+              unstash 'backend1-build'
+              sh 'ls build'
+            }
           }
         }
 
         stage('Build Backend2 Image') {
           agent any
           steps {
-            unstash 'backend2-build'
-            sh 'ls'
+            dir("jenkins-pipeline/back2") {            
+              unstash 'backend2-build'
+              sh 'ls'
+            }
           }
         }
       }
