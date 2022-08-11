@@ -52,13 +52,15 @@ pipeline {
           }
         }
 
-        stage('Build Backend2') {
-          agent { docker 'adoptopenjdk/openjdk11' }
-          steps {
-            dir("jenkins-pipeline/back2") {
-              sh './gradlew clean build'
-              sh 'ls build/libs'
-              stash includes: 'build/libs', name: 'backend2-build'
+        stage('Backend2') {
+          stage('Build Backend2') {
+            agent { docker 'adoptopenjdk/openjdk11' }
+            steps {
+              dir("jenkins-pipeline/back2") {
+                sh './gradlew clean build'
+                sh 'ls build/libs'
+                stash includes: 'build/libs', name: 'backend2-build'
+              }
             }
           }
           stage('Build Backend2 Image') {
