@@ -31,7 +31,7 @@ pipeline {
               sh 'gradle bootJar'
               dir(path: 'build/libs') {
                 script {
-                  DOCKER_IMAGE = docker.build DOCKER_REGISTRY
+                  DOCKER_IMAGE = docker.build DOCKER_REGISTRY ../../Dockerfile
                 }
 
               }
