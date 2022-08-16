@@ -44,9 +44,22 @@ pipeline {
 
             }
 
-            kubeconfig(credentialsId: 'k8s-144', serverUrl: 'https://192.168.16.141:6443', caCertificate: '') {
-              sh 'kubectl get pods'
+            withCredentials([kubeconfigContent(credentialsId: 'k8s-144', variable: 'KUBECONFIG_CONTENT')]) {
+                sh '''echo "$KUBECONFIG_CONTENT" > kubeconfig && cat kubeconfig && rm kubeconfig'''
             }
+
+            kubernetesDeploy(kubeconfigId: 'k8s-144',               // REQUIRED
+
+                            configs: "${KUBECONFIG_CONTENT}", // REQUIRED
+                            enableConfigSubstitution: false,
+                    
+                            secretNamespace: '<secret-namespace>',
+                            secretName: '<secret-name>',
+                            dockerCredentials: [
+                                    [credentialsId: '<credentials-id-for-docker-hub>'],
+                                    [credentialsId: '<credentials-id-for-other-private-registry>', url: '<registry-url>'],
+                            ]
+            )
 
           }
         }
