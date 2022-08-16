@@ -52,13 +52,7 @@ pipeline {
 
                             configs: "${KUBECONFIG_CONTENT}", // REQUIRED
                             enableConfigSubstitution: false,
-                    
-                            secretNamespace: '<secret-namespace>',
-                            secretName: '<secret-name>',
-                            dockerCredentials: [
-                                    [credentialsId: '<credentials-id-for-docker-hub>'],
-                                    [credentialsId: '<credentials-id-for-other-private-registry>', url: '<registry-url>'],
-                            ]
+                    sh 'kubectl get pods'
             )
 
           }
