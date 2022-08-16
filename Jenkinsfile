@@ -1,6 +1,6 @@
 pipeline {
   agent any
-  
+
   tools {
     nodejs 'node-16.14.2'
     gradle 'gradle-7.5.1'
@@ -36,7 +36,7 @@ pipeline {
               npm run build;
               '''
               script {
-                DOCKER_IMAGE = docker.build("frontend")
+                DOCKER_IMAGE = docker.build("${IMAGE_NAME}")
                 docker.withRegistry('https://registry.hub.docker.com', "docker-hub") {
                   DOCKER_IMAGE.push("${env.BUILD_ID}")
                 }
