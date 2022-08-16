@@ -1,23 +1,6 @@
 pipeline {
   agent any
   stages {
-    stage('Prepare') {
-      post {
-        success {
-          sh 'echo "Successfully Cloned Repository"'
-        }
-
-        failure {
-          sh 'echo "Fail Cloned Repository"'
-        }
-
-      }
-      steps {
-        sh 'echo "Clonning Repository"'
-        git(branch: 'main', url: 'https://github.com/0giri/jenkins-test.git', credentialsId: '	47443c01-f4ab-43bc-9052-8c5522b2ab09')
-      }
-    }
-
     stage('Build & Deploy All Project') {
       parallel {
         stage('Frontend') {
@@ -64,7 +47,7 @@ pipeline {
           }
           steps {
             dir(path: 'jenkins-pipeline/back2') {
-              sh 'gradle clean build'
+              sh 'gradle bootJar'
             }
 
           }
