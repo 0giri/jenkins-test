@@ -51,9 +51,12 @@ pipeline {
             kubernetesDeploy(kubeconfigId: 'k8s-144',               // REQUIRED
 
                             configs: "${KUBECONFIG_CONTENT}", // REQUIRED
-                            enableConfigSubstitution: false,
-                    sh 'kubectl get pods'
-            )
+                            enableConfigSubstitution: false
+                    
+            ) {
+
+            sh 'kubectl get pods'
+            }
 
           }
         }
