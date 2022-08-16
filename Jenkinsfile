@@ -34,7 +34,7 @@ pipeline {
               sh 'gradle bootJar'
               dir(path: 'build/libs') {
                 script {
-                  DOCKER_IMAGE = docker.build("${IMAGE_NAME}", "../..")
+                  DOCKER_IMAGE = docker.build("${IMAGE_NAME}", "../..");
                   docker.withRegistry('https://registry.hub.docker.com', "Docker-Hub") {
                     DOCKER_IMAGE.push("${env.BUILD_ID}")
                   }
