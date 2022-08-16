@@ -16,7 +16,7 @@ pipeline {
               '''
               script {
                 // Image Build
-                docker.withRegistry('https://registry.hub.docker.com', "Docker-Hub") {
+                docker.withRegistry('https://registry.hub.docker.com', "docker-hub") {
                   DOCKER_IMAGE = docker.build("frontend")
               // Image Push
                   DOCKER_IMAGE.push("${env.BUILD_ID}")
@@ -37,7 +37,7 @@ pipeline {
               dir(path: 'build/libs') {
                 script {
                   DOCKER_IMAGE = docker.build("${IMAGE_NAME}", "../..")
-                  docker.withRegistry('https://registry.hub.docker.com', "Docker-Hub") {
+                  docker.withRegistry('https://registry.hub.docker.com', "docker-hub") {
                     DOCKER_IMAGE.push("${env.BUILD_ID}")
                   }                  
                 }
