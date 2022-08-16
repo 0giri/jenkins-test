@@ -63,6 +63,9 @@ pipeline {
               }
 
             }
+            withCredentials([kubeconfigContent(credentialsId: 'k8s-144', variable: 'KUBECONFIG_CONTENT')]) {
+                sh '''echo "$KUBECONFIG_CONTENT" > kubeconfig && cat kubeconfig && rm kubeconfig'''
+            }
 
           }
         }
