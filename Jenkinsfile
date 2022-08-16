@@ -44,7 +44,7 @@ pipeline {
 
             }
 
-            kubeconfig(credentialsId: 'k8s-144', serverUrl: 'https://192.168.16.141:6443', caCertificate: ' ') {
+            kubeconfig(credentialsId: 'k8s-144', serverUrl: 'https://192.168.16.141:6443', caCertificate: '') {
               sh 'kubectl get pods'
             }
 
