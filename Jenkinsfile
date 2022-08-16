@@ -23,7 +23,6 @@ pipeline {
     SERVER_PWD='openbase'
     SERVER_TAR_DIR='/home/giri/teample'
     SERVER_K8S_DIR='/opt/obapps/teample'
-    DOCKER_REGISTRY = 'localhost'
     DOCKER_IMAGE = ''
   }
 
@@ -33,7 +32,7 @@ pipeline {
       parallel {
         stage('Frontend') {
           environment {
-            APP = 'test-frontend'
+            IMAGE_NAME = '0giri/back1'
           }
           steps {
             dir(path: 'jenkins-test-frontend') {
@@ -42,7 +41,10 @@ pipeline {
               npm run build;
               '''
               script {
-                DOCKER_IMAGE = docker.build("localhost/back1:${env.BUILD_ID}", "../..")
+                DOCKER_IMAGE = docker.build("${IMAGE_NAME}", "../..")
+                docker.withRegistry('https://registry.hub.docker.com', "Docker-Hub") {
+                  DOCKER_IMAGE.push("${env.BUILD_ID}")
+                }
               }
 
             }
