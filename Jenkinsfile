@@ -29,23 +29,6 @@ pipeline {
 
   stages {
 
-    stage('Prepare') {
-        steps {
-            sh 'echo "Clonning Repository"'
-            git branch: 'main',
-                url: 'https://github.com/0giri/jenkins-test.git',
-                credentialsId: 'github-jenkins-token'
-        }
-        post {
-            success { 
-                  sh 'echo "Successfully Cloned Repository"'
-              }
-              failure {
-                  sh 'echo "Fail Cloned Repository"'
-              }
-        }
-    }
-
     stage('Build & Deploy All Project') {
 
       parallel {
@@ -62,7 +45,7 @@ pipeline {
               """
 
               script {
-                DOCKER_IMAGE = docker.build DOCKER_REGISTRY
+                DOCKER_IMAGE = docker.build("localhost/back1:${env.BUILD_ID}", "../..")
               }
               // docker build -t ${IMAGE_REGISTRY}/${APP}:v${RELEASE_VER}.${BUILD_TIMESTAMP} .;
               // sh 'docker save -o ${JENKINS_TAR_DIR}/${APP}.tar ${IMAGE_REGISTRY}/${APP}:v${RELEASE_VER}.${BUILD_TIMESTAMP}'
@@ -80,7 +63,7 @@ pipeline {
               sh 'gradle bootJar'
               dir("build/libs") {
                 script {
-                  DOCKER_IMAGE = docker.build DOCKER_REGISTRY
+                  DOCKER_IMAGE = docker.build DOCKER_REGISTRY ../../Dockerfile
                 }
                 // sh 'docker build -f ../../Dockerfile -t ${IMAGE_REGISTRY}/${APP}:v${RELEASE_VER}.${BUILD_TIMESTAMP} .'
                 // sh 'docker save -o ${JENKINS_TAR_DIR}/${APP}.tar ${IMAGE_REGISTRY}/${APP}:v${RELEASE_VER}.${BUILD_TIMESTAMP}'
