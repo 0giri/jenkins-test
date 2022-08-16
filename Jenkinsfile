@@ -39,25 +39,9 @@ pipeline {
                     DOCKER_IMAGE.push("${env.BUILD_ID}")
                   }
                 }
-
               }
-
             }
-
-            withCredentials([kubeconfigContent(credentialsId: 'k8s-144', variable: "${KUBECONFIG_CONTENT}")]) {
-                sh '''echo "$KUBECONFIG_CONTENT" > kubeconfig && cat kubeconfig && rm kubeconfig'''
-            }
-
-            kubernetesDeploy(kubeconfigId: 'k8s-144',               // REQUIRED
-
-                            configs: "${KUBECONFIG_CONTENT}", // REQUIRED
-                            enableConfigSubstitution: false
-                    
-            ) {
-
             sh 'kubectl get pods'
-            }
-
           }
         }
 
