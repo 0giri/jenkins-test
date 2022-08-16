@@ -29,23 +29,6 @@ pipeline {
 
   stages {
 
-    stage('Prepare') {
-        steps {
-            sh 'echo "Clonning Repository"'
-            git branch: 'main',
-                url: 'https://github.com/0giri/jenkins-test.git',
-                credentialsId: 'github-jenkins-token'
-        }
-        post {
-            success { 
-                  sh 'echo "Successfully Cloned Repository"'
-              }
-              failure {
-                  sh 'echo "Fail Cloned Repository"'
-              }
-        }
-    }
-
     stage('Build & Deploy All Project') {
       parallel {
         stage('Frontend') {
