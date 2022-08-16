@@ -16,12 +16,13 @@ pipeline {
               '''
               script {
                 // Image Build
-                DOCKER_IMAGE = docker.build("frontend")
-              }
+                docker.withRegistry('https://registry.hub.docker.com', "Docker-Hub") {
+                  DOCKER_IMAGE = docker.build("frontend")
               // Image Push
-              docker.withRegistry('https://registry.hub.docker.com', "Docker-Hub") {
-                DOCKER_IMAGE.push("${env.BUILD_ID}")
+                  DOCKER_IMAGE.push("${env.BUILD_ID}")
+                }
               }
+
             }
           }
         }
