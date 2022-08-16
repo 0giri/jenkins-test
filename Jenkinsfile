@@ -1,5 +1,6 @@
 pipeline {
   agent any
+
   tools { 
     nodejs 'node-16.14.2'
     gradle 'gradle-7.5.1'
@@ -22,29 +23,55 @@ pipeline {
     SERVER_PWD='openbase'
     SERVER_TAR_DIR='/home/giri/teample'
     SERVER_K8S_DIR='/opt/obapps/teample'
+    DOCKER_REGISTRY = 'localhost'
+    DOCKER_IMAGE = ''
   }
 
   stages {
 
-    stage('Build All Project') {
+    stage('Prepare') {
+        steps {
+            sh 'echo "Clonning Repository"'
+            git branch: 'main',
+                url: 'https://github.com/0giri/jenkins-test.git',
+                credentialsId: 'github-jenkins-token'
+        }
+        post {
+            success { 
+                  sh 'echo "Successfully Cloned Repository"'
+              }
+              failure {
+                  sh 'echo "Fail Cloned Repository"'
+              }
+        }
+    }
+
+    stage('Build & Deploy All Project') {
 
       parallel {
 
-        stage('Build Frontend') {
+        stage('Frontend') {
           environment {
             APP='test-frontend'
           }
           steps {
             dir("jenkins-test-frontend") {
-              sh 'npm install; npm run build'
-              sh 'docker build -t ${IMAGE_REGISTRY}/${APP}:v${RELEASE_VER}.${BUILD_TIMESTAMP} .'
-              sh 'docker save -o ${JENKINS_TAR_DIR}/${APP}.tar ${IMAGE_REGISTRY}/${APP}:v${RELEASE_VER}.${BUILD_TIMESTAMP}'
-              sh 'scp ${JENKINS_TAR_DIR}/${APP}.tar ${SERVER_USER}@${SERVER_IP}:${SERVER_TAR_DIR}'
+              sh """
+              npm install; 
+              npm run build;
+              """
+
+              script {
+                DOCKER_IMAGE = docker.build DOCKER_REGISTRY
+              }
+              // docker build -t ${IMAGE_REGISTRY}/${APP}:v${RELEASE_VER}.${BUILD_TIMESTAMP} .;
+              // sh 'docker save -o ${JENKINS_TAR_DIR}/${APP}.tar ${IMAGE_REGISTRY}/${APP}:v${RELEASE_VER}.${BUILD_TIMESTAMP}'
+              // sh 'scp ${JENKINS_TAR_DIR}/${APP}.tar ${SERVER_USER}@${SERVER_IP}:${SERVER_TAR_DIR}'
             }
           }
         }
 
-        stage('Build Backend1') {
+        stage('Backend1') {
           environment {
             APP='test-backend1'
           }
@@ -55,12 +82,16 @@ pipeline {
                 sh 'docker build -f ../../Dockerfile -t ${IMAGE_REGISTRY}/${APP}:v${RELEASE_VER}.${BUILD_TIMESTAMP} .'
                 sh 'docker save -o ${JENKINS_TAR_DIR}/${APP}.tar ${IMAGE_REGISTRY}/${APP}:v${RELEASE_VER}.${BUILD_TIMESTAMP}'
                 sh 'scp ${JENKINS_TAR_DIR}/${APP}.tar ${SERVER_USER}@${SERVER_IP}:${SERVER_TAR_DIR}'
+
+                ssh ${SERVER_USER}@${SERVER_IP} "echo ${SERVER_PWD} | su -c 'podman image load -i ${SERVER_TAR_DIR}/${APP}.tar; \
+                sed -i 's/${APP}:v.*/${APP}:v${RELEASE_VER}.${BUILD_TIMESTAMP}/g' ${SERVER_K8S_DIR}/${APP}.yaml'"
+                kubectl set image deployment/${APP} ${APP}=${IMAGE_REGISTRY}/${APP}:v${RELEASE_VER}.${BUILD_TIMESTAMP}
               }
             }
           }
         }
 
-        stage('Build Backend2') {
+        stage('Backend2') {
           environment {
             APP='test-backend2'
           }
