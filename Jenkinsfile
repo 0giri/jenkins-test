@@ -77,15 +77,18 @@ pipeline {
           }
           steps {
             dir("jenkins-pipeline/back1") {
-              sh 'gradle clean build'
+              sh 'gradle bootJar'
               dir("build/libs") {
-                sh 'docker build -f ../../Dockerfile -t ${IMAGE_REGISTRY}/${APP}:v${RELEASE_VER}.${BUILD_TIMESTAMP} .'
-                sh 'docker save -o ${JENKINS_TAR_DIR}/${APP}.tar ${IMAGE_REGISTRY}/${APP}:v${RELEASE_VER}.${BUILD_TIMESTAMP}'
-                sh 'scp ${JENKINS_TAR_DIR}/${APP}.tar ${SERVER_USER}@${SERVER_IP}:${SERVER_TAR_DIR}'
+                script {
+                  DOCKER_IMAGE = docker.build DOCKER_REGISTRY
+                }
+                // sh 'docker build -f ../../Dockerfile -t ${IMAGE_REGISTRY}/${APP}:v${RELEASE_VER}.${BUILD_TIMESTAMP} .'
+                // sh 'docker save -o ${JENKINS_TAR_DIR}/${APP}.tar ${IMAGE_REGISTRY}/${APP}:v${RELEASE_VER}.${BUILD_TIMESTAMP}'
+                // sh 'scp ${JENKINS_TAR_DIR}/${APP}.tar ${SERVER_USER}@${SERVER_IP}:${SERVER_TAR_DIR}'
 
-                ssh ${SERVER_USER}@${SERVER_IP} "echo ${SERVER_PWD} | su -c 'podman image load -i ${SERVER_TAR_DIR}/${APP}.tar; \
-                sed -i 's/${APP}:v.*/${APP}:v${RELEASE_VER}.${BUILD_TIMESTAMP}/g' ${SERVER_K8S_DIR}/${APP}.yaml'"
-                kubectl set image deployment/${APP} ${APP}=${IMAGE_REGISTRY}/${APP}:v${RELEASE_VER}.${BUILD_TIMESTAMP}
+                // ssh ${SERVER_USER}@${SERVER_IP} "echo ${SERVER_PWD} | su -c 'podman image load -i ${SERVER_TAR_DIR}/${APP}.tar; \
+                // sed -i 's/${APP}:v.*/${APP}:v${RELEASE_VER}.${BUILD_TIMESTAMP}/g' ${SERVER_K8S_DIR}/${APP}.yaml'"
+                // kubectl set image deployment/${APP} ${APP}=${IMAGE_REGISTRY}/${APP}:v${RELEASE_VER}.${BUILD_TIMESTAMP}
               }
             }
           }
@@ -98,9 +101,9 @@ pipeline {
           steps {
             dir("jenkins-pipeline/back2") {
               sh 'gradle clean build'
-              script {
-                app3 = docker.build("test-backend2:$BUILD_NUMBER")
-              }
+              // script {
+                // app3 = docker.build("test-backend2:$BUILD_NUMBER")
+              // }
             }
           }
         }
