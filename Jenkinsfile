@@ -1,25 +1,5 @@
 pipeline {
   agent any
-
-  tools {
-    nodejs 'node-16.14.2'
-    gradle 'gradle-7.5.1'
-  }
-
-  environment {
-    CI = 'false'
-    REGISTRY = 'https://registry.hub.docker.com'
-    DOCKER_CREDENTIAL = 'docker-hub'
-    // SERVER_IP = '192.168.16.37'
-    // SERVER_USER = 'giri'
-    // SERVER_PWD = 'openbase'
-    // SERVER_K8S_DIR = '/opt/obapps/teample'
-  }
-
-  parameters {
-    string(name: 'RELEASE_VER', defaultValue: '0.0.0', description: '목표 릴리즈 버전')
-  }
-
   stages {
     stage('Build & Deploy All Project') {
       parallel {
@@ -39,9 +19,12 @@ pipeline {
                   DOCKER_IMAGE.push("${env.BUILD_ID}")
                 }
               }
+
             }
+
           }
         }
+
         stage('Backend1') {
           environment {
             REPOSITORY = '0giri/back1'
@@ -54,12 +37,20 @@ pipeline {
                   DOCKER_IMAGE = docker.build("${REPOSITORY}", "../..")
                   docker.withRegistry("${REGISTRY}", "${DOCKER_CREDENTIAL}") {
                     DOCKER_IMAGE.push("${env.BUILD_ID}")
-                  }                  
+                  }
                 }
+
               }
+
             }
+
+            kubeconfig(credentialsId: 'k8s-144', serverUrl: 'https://192.168.16.141:6443', caCertificate: ' ') {
+              sh 'kubectl get pods'
+            }
+
           }
         }
+
         stage('Backend2') {
           environment {
             REPOSITORY = '0giri/back2'
@@ -72,14 +63,31 @@ pipeline {
                   DOCKER_IMAGE = docker.build("${REPOSITORY}", "../..")
                   docker.withRegistry("${REGISTRY}", "${DOCKER_CREDENTIAL}") {
                     DOCKER_IMAGE.push("${env.BUILD_ID}")
-                  }                  
+                  }
                 }
-              }              
+
+              }
+
             }
+
           }
         }
+
       }
     }
+
+  }
+  tools {
+    nodejs 'node-16.14.2'
+    gradle 'gradle-7.5.1'
+  }
+  environment {
+    CI = 'false'
+    REGISTRY = 'https://registry.hub.docker.com'
+    DOCKER_CREDENTIAL = 'docker-hub'
+  }
+  parameters {
+    string(name: 'RELEASE_VER', defaultValue: '0.0.0', description: '목표 릴리즈 버전')
   }
 }
 
