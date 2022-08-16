@@ -31,9 +31,7 @@ pipeline {
     stage('Build & Deploy All Project') {
       parallel {
         stage('Frontend') {
-          environment {
-            IMAGE_NAME = '0giri/frontend'
-          }
+          environment { IMAGE_NAME = '0giri/frontend' }
           steps {
             dir(path: 'jenkins-test-frontend') {
               sh '''
@@ -53,15 +51,16 @@ pipeline {
         }
 
         stage('Backend1') {
-          environment {
-            IMAGE_NAME = '0giri/back1'
-          }
+          environment { IMAGE_NAME = '0giri/back1' }
           steps {
             dir(path: 'jenkins-pipeline/back1') {
               sh 'gradle bootJar'
               dir(path: 'build/libs') {
                 script {
-                  DOCKER_IMAGE = docker.build("${IMAGE_NAME}:${env.BUILD_ID}", "../..")
+                  DOCKER_IMAGE = docker.build("${IMAGE_NAME}", "../..")
+                  docker.withRegistry('https://registry.hub.docker.com', "Docker-Hub") {
+                    DOCKER_IMAGE.push("${env.BUILD_ID}")
+                  }                  
                 }
 
               }
